@@ -1,0 +1,89 @@
+import java.util.Scanner;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+class MyStringArray {
+    private String[] strings; 
+
+    
+    public MyStringArray(int size) {
+        strings = new String[size];
+    }
+
+    // Метод для ввода строк с клавиатуры
+    public void inputStrings() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Введите строки:");
+        for (int i = 0; i < strings.length; i++) {
+            System.out.print("Строка " + (i + 1) + ": ");
+            strings[i] = scanner.nextLine();
+        }
+    }
+
+    // Метод для поиска первого и последнего вхождения подстроки в массиве
+    public void findSubstringOccurrences(String substring) {
+        int firstIndex = -1;
+        int lastIndex = -1;
+        
+        for (int i = 0; i < strings.length; i++) {
+            // Находим первое вхождение
+            if (firstIndex == -1 && strings[i].indexOf(substring) != -1) {
+                firstIndex = i;
+            }
+            // Находим последнее вхождение
+            if (strings[i].lastIndexOf(substring) != -1) {
+                lastIndex = i;
+            }
+        }
+        
+        // Выводим результаты
+        if (firstIndex != -1) {
+            System.out.println("Первое вхождение подстроки \"" + substring + "\" на позиции: " + firstIndex);
+        } else {
+            System.out.println("Подстрока \"" + substring + "\" не найдена в строках.");
+        }
+        
+        if (lastIndex != -1) {
+            System.out.println("Последнее вхождение подстроки \"" + substring + "\" на позиции: " + lastIndex);
+        } else {
+            System.out.println("Подстрока \"" + substring + "\" не найдена в строках.");
+        }
+
+        // Запись в файл
+        try (FileWriter writer = new FileWriter("output.txt", true)) {
+            writer.write("Поиск подстроки: \"" + substring + "\"\n");
+            writer.write("Первое вхождение: " + firstIndex + "\n");
+            writer.write("Последнее вхождение: " + lastIndex + "\n\n");
+        } catch (IOException e) {
+            System.out.println("Ошибка записи в файл: " + e.getMessage());
+        }
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        MyStringArray myStrings = new MyStringArray(5); 
+
+        // Ввод строк
+        myStrings.inputStrings();
+
+        while (true) {
+            // Ввод подстроки для поиска
+            System.out.print("\nВведите подстроку для поиска (или введите 'exit' для выхода): ");
+            String substring = scanner.nextLine();
+
+            // Если пользователь хочет выйти
+            if (substring.equalsIgnoreCase("exit")) {
+                System.out.println("Выход из программы...");
+                break;
+            }
+
+            // Поиск подстроки
+            myStrings.findSubstringOccurrences(substring);
+        }
+
+        scanner.close();
+    }
+}
